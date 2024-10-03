@@ -3,10 +3,10 @@
 
 ## Background
 
-This is the first portion of a 7-part project series to launch the following stateless applications below in an EKS cluster with Fargate Nodes using a CI/CD pipeline setup in Jenkins named DB:
+This is the first portion of a 7-part project series to launch the following stateless and stateful application below in an EKS cluster with Fargate and Managed Nodes using a CI/CD pipeline setup in Jenkins named DB:
 
-1)	A simple static website/webpage running on an NGINX web server
-2)	A 3 tier Login SpringBoot Java Application connected to a MongoDB NoSQL database.
+1)	A Login SpringBoot Java Application
+2)	A MongoDB database
 
 In addition, you will provision an EC2 instance using terraform that will have Docker installed then connected to Jenkins as a Worker Node and deploy SonarQube in the DB cluster to perform code quality testing on the Springboot application. Finally, you will launch monitoring tools Prometheus and Grafana to track the performance of all active applications in the DB cluster 
 
