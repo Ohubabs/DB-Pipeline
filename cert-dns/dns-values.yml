@@ -8,4 +8,4 @@ serviceAccount:
   name: "external-dns"
   ## @param serviceAccount.annotations Additional Service Account annotations
   ##
-  annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::083772204804:role/DB-external-dns}
+  annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::aws-account-ID:role/DB-external-dns}
