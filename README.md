@@ -26,9 +26,7 @@ For this project, perform the following tasks:
 ## Prerequisites
 
 -	Visual Studio Code
--	Knowledge on Kubernetes, Terraform, Helm Charts, AWS, CI/CD pipelines and Visual Studion Code/IDEs
-
-Note:- If you do not have the applications & CLIs above installed, run the shell script “db.sh” after setting up your EC2 instance.
+-	Knowledge on Kubernetes, Terraform, Helm Charts, AWS, CI/CD pipelines and Visual Studio Code/IDEs
 
 ## Setup Jenkins in EKS Cluster
 
