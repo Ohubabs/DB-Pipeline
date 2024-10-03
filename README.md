@@ -250,7 +250,14 @@ Check that your cluster is created by checking your EC2 managed nodes
 
 ![Screenshot 2024-06-25 at 3 59 07 PM](https://github.com/user-attachments/assets/e4a791b8-2414-4e8d-91a8-0b04d2e4e116)
 
-![Screenshot 2024-06-25 at 3 59 20 PM](https://github.com/user-attachments/assets/e3d124d2-6013-4826-83a4-bbfdea3cedb5)
+![Screenshot 2024-06-24 at 1 48 55 PM](https://github.com/user-attachments/assets/4c340869-a73a-4ff2-8e28-bdb9ceb72fd8)
+
+![Screenshot 2024-06-24 at 1 49 51 PM](https://github.com/user-attachments/assets/a4f84fb5-9741-43c7-b660-f05001c91ff7)
+
+![Screenshot 2024-06-24 at 1 49 59 PM](https://github.com/user-attachments/assets/b4c0a1af-b1cc-457e-b1da-4d821f48ee74)
+
+![Screenshot 2024-06-24 at 1 50 26 PM](https://github.com/user-attachments/assets/9aae8307-21bd-47d7-8da8-7dbd1dce54f1)
+
 
 ![Screenshot 2024-06-24 at 1 51 50 PM](https://github.com/user-attachments/assets/3bcdffbe-7e19-47fc-bf74-e71f840268b4)
 
