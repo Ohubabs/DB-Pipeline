@@ -1,9 +1,9 @@
-variable "ichiraku" {
+variable "kamehameha" {
     description = "AWS Acces ID"
     default = "" 
 }
 
-variable "ramen" {
+variable "spiritbomb" {
     description = "AWS Secret Key"
     default = "" 
 }
