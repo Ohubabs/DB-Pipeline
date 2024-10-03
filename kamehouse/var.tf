@@ -8,7 +8,17 @@ variable "ramen" {
     default = "" 
 }
 
-variable "konoha" {
+variable "korean" {
+    description = "Username for Jenkins"
+    default = "" 
+}
+
+variable "bbq" {
+    description = "Password for Jenkins"
+    default = "" 
+}
+
+/*variable "konoha" {
     description = "Username for Elastic/Kibana Dashboard"
     default = "elastic" 
 }
@@ -28,16 +38,6 @@ variable "finalflash" {
     default = "" 
 }
 
-variable "korean" {
-    description = "Username for Jenkins"
-    default = "" 
-}
-
-variable "bbq" {
-    description = "Password for Jenkins"
-    default = "" 
-}
-
 variable "bbq_turkey" {
     description = "Root Password for mongodb"
     default = "" 
@@ -51,5 +51,5 @@ variable "nigerian" {
 variable "beef_suya" {
     description = "Password for springapp mongo db access"
     default = "" 
-}
+}*/
 
