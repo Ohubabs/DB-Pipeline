@@ -11,10 +11,10 @@ resource "kubernetes_ingress_v1" "pipeline" {
     ingress_class_name = "nginx"
     tls {
       secret_name = "devops-secret"
-      hosts = ["pipeline.devopsnetwork.net" 
+      hosts = ["pipeline.domain-name" 
     }
     rule {
-      host = "pipeline.devopsnetwork.net"  
+      host = "pipeline.domain-name"  
       http {
         path {
           path = "/"
