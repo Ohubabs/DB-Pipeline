@@ -97,6 +97,10 @@ Check that your cluster is created by checking your EC2 managed nodes
 ### Step 5: Setup Secrets within DB Cluster.
 
 -	Enter the Kamehouse / directory
+-	Edit the var.tf file with your AWS credentials, which will be used for issuing certificates to SSL encrypt your websites, and Jenkins admin login details.
+
+![image](https://github.com/user-attachments/assets/569e71ae-d32b-4bd3-85f7-2feaf0ada462)
+
 -	Execute the following commands:
 
         terraform init
