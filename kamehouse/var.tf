@@ -8,12 +8,12 @@ variable "ramen" {
     default = "" 
 }
 
-variable "korean" {
+variable "specialbeamcanon" {
     description = "Username for Jenkins"
     default = "" 
 }
 
-variable "bbq" {
+variable "masenko" {
     description = "Password for Jenkins"
     default = "" 
 }
