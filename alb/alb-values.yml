@@ -2,7 +2,7 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Annotations to add to the service account
-  annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::083772204804:role/DB-alb}
+  annotations: {eks.amazonaws.com/role-arn: arn:aws:iam::aws-account-ID:role/DB-alb}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: aws-load-balancer-controller
