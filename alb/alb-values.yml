@@ -9,6 +9,6 @@ serviceAccount:
 nodeSelector: {}
 enableCertManager: false
 defaultTargetType: ip
-#Updated name of cluster in service account arn as of 03/27/24
+
 
 
