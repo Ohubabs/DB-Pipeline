@@ -244,7 +244,17 @@ Check that your cluster is created by checking your EC2 managed nodes
 
 ![Screenshot 2024-06-24 at 11 53 24 AM](https://github.com/user-attachments/assets/18946fa8-4004-4df4-a39c-1f0ef3f8e35c)
 
+![Screenshot 2024-10-02 at 7 38 21 PM](https://github.com/user-attachments/assets/225dc322-840b-4fc4-b087-a564287126fd)
+
+![Screenshot 2024-10-02 at 7 40 10 PM](https://github.com/user-attachments/assets/6cb14c51-982d-4dc2-a7a3-58f54345b7c8)
+
 ![Screenshot 2024-06-24 at 12 07 33 PM](https://github.com/user-attachments/assets/50090c27-04bd-454a-86bd-2c3fae69a6ef)
+
+![Screenshot 2024-06-24 at 12 09 30 PM](https://github.com/user-attachments/assets/c257e956-f0b3-4bc0-8952-b6c32787f0af)
+
+![Screenshot 2024-06-24 at 12 12 45 PM](https://github.com/user-attachments/assets/89113e51-ce6a-4711-8f12-696b9d78ad71)
+
+
 
 ### Step 5: Go to “Manage Jenkins”, Select “Nodes”, and connect your Jenkins controller to your host server.
 
