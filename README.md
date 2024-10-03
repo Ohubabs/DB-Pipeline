@@ -119,6 +119,10 @@ Check that your cluster is created by checking your EC2 managed nodes
 ### Step 6: Deploy the External DNS helm chart for the application to handle setting up apps within the DB Cluster with domain names/url for easy access on the internet and the Cert-Manager Helm Chart to use the cert-manager application to issue and manage Lets Encrypt certificates.
 
 -	Enter the cert-dns/ directory
+-	Edit the dns-values.yml file by entering the arn for the IAM Service Account role you created for the External DNS to be launched in your cluster to register domains created in the cluster with your AWS Route 53 hosted zone.
+
+![image](https://github.com/user-attachments/assets/149e1551-369f-4c3a-9dbf-3a0c3af2fed7)
+
 -	Execute the following commands:
 
         terraform init
@@ -150,6 +154,10 @@ Check that your cluster is created by checking your EC2 managed nodes
 ### Step 8: Deploy the Application LoadBalancer Helm Chart to handle the traffic in and out to applications running within the DB Cluster:
 
 -	Enter the alb/ directory
+-	Edit the alb-values.yml file with the arn for the IAM Service Account you created to be able to launch an AWS ALB Loadbalancer.
+
+![image](https://github.com/user-attachments/assets/8120f958-074d-48ab-a166-e8ca3da00627)
+
 -	Execute the following commands:
 
         terraform init
@@ -188,6 +196,10 @@ Check that your cluster is created by checking your EC2 managed nodes
 ### Step 10: Deploy the Jenkins Helm Chart to launch the CI/CD automation application:
 
 -	Enter the pipeline/ directory
+-	If you change the name for the secret that holds you Jenkins authentication info, you must also edit the admin section of the jenkins-values.yml file.
+
+![image](https://github.com/user-attachments/assets/7bf53056-d8ea-4308-96bb-a3f53e9e0164)
+
 -	Execute the following commands:
 
         terraform init
