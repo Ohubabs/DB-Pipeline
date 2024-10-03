@@ -167,9 +167,13 @@ Check that your cluster is created by checking your EC2 managed nodes
   ![Screenshot 2024-10-02 at 1 03 18 PM](https://github.com/user-attachments/assets/5267a688-03ac-4213-b9b2-d974d3367d4c)
 
 
-### Step 9: Deploy the Nginx-Ingress Helm Chart to handle the traffic in and out to applications running in pods within theDB Cluster:
+### Step 9: Deploy the Nginx-Ingress Helm Chart to expose your jenkins application to the internet at your custom website url:
 
 -	Enter the nginx-ingress/ directory
+-	Edit the pipeline-ingress.tf file with the custom url you entered in step 7.
+
+![image](https://github.com/user-attachments/assets/91f4ab07-0ae8-4d42-bb7e-041625a106c1)
+
 -	Execute the following commands:
 
         terraform init
