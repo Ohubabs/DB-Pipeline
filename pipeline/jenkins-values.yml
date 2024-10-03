@@ -72,18 +72,18 @@ controller:
   # When enabling LDAP or another non-Jenkins identity source, the built-in admin account will no longer exist.
   # If you disable the non-Jenkins identity store and instead use the Jenkins internal one,
   # you should revert controller.admin.username to your preferred admin user:
-  admin: 
+  admin:
 
     # -- Admin username created as a secret if `controller.admin.createSecret` is true
-    username: ""
+    username: "admin"
     # -- Admin password created as a secret if `controller.admin.createSecret` is true
     # @default -- <random password>
-    password: 
+    password:
 
     # -- The key in the existing admin secret containing the username
-    userKey: korean
+    userKey: specialbeamcanon
     # -- The key in the existing admin secret containing the password
-    passwordKey: bbq
+    passwordKey: masenko
 
     # The default configuration uses this secret to configure an admin user
     # If you don't need that user or use a different security realm, then you can disable it
@@ -91,7 +91,7 @@ controller:
     createSecret: true
 
     # -- The name of an existing secret containing the admin credentials
-    existingSecret: "jenkins-auth"
+    existingSecret: piccolo
   # -- Email address for the administrator of the Jenkins instance
   jenkinsAdminEmail:
 
@@ -122,6 +122,12 @@ controller:
 
   # Share process namespace to allow sidecar containers to interact with processes in other containers in the same pod
   shareProcessNamespace: false
+
+  # Service links might cause issue if running in a namespace with a large amount of services
+  # that might cause a slow startup when plugins are copied from ref to volume
+  # Set to true to keep previous behavior
+  # See https://github.com/kubernetes/kubernetes/issues/121787
+  enableServiceLinks: false
 
   # Overrides the init container default values
   # -- Resources allocation (Requests and Limits) for Init Container
@@ -165,7 +171,7 @@ controller:
   jenkinsUrlProtocol:
 
   # -- Set Jenkins URL if you are not using the ingress definitions provided by the chart
-  jenkinsUrl: jenkins.devopsnetwork.net
+  jenkinsUrl:
 
   # If you set this prefix and use ingress controller, then you might want to set the ingress path below
   # I.e., "/jenkins"
@@ -218,7 +224,7 @@ controller:
   # -- k8s service port
   servicePort: 443
   # -- k8s target port
-  targetPort: 8080
+  targetPort: 8443
   # -- k8s node port. Only used if serviceType is NodePort
   nodePort:
 
@@ -393,10 +399,10 @@ controller:
   # Plugins will be installed during Jenkins controller start
   # -- List of Jenkins plugins to install. If you don't want to install plugins, set it to `false`
   installPlugins:
-    - kubernetes:4203.v1dd44f5b_1cf9
-    - workflow-aggregator:596.v8c21c963d92d
-    - git:5.2.1
-    - configuration-as-code:1775.v810dc950b_514
+    - kubernetes:4290.v93ea_4b_b_26a_61
+    - workflow-aggregator:600.vb_57cdd26fdd7
+    - git:5.5.1
+    - configuration-as-code:1850.va_a_8c31d3158b_
 
   # If set to false, Jenkins will download the minimum required version of all dependencies.
   # -- Download the minimum required version or latest version of all dependencies
@@ -533,6 +539,10 @@ controller:
     authorizationStrategy: |-
       loggedInUsersCanDoAnything:
         allowAnonymousRead: false
+
+    # -- Annotations for the JCasC ConfigMap
+    configMapAnnotations: {}
+
   # -- Custom init-container specification in raw-yaml format
   customInitContainers: []
   # - name: custom-init
@@ -554,7 +564,7 @@ controller:
         # -- Repository of the image that triggers the reload
         repository: kiwigrid/k8s-sidecar
         # -- Tag for the image that triggers the reload
-        tag: 1.26.1
+        tag: 1.28.0
       imagePullPolicy: IfNotPresent
       resources: {}
         #   limits:
@@ -563,6 +573,24 @@ controller:
         #   requests:
         #     cpu: 50m
         #     memory: 50Mi
+      # -- Enables additional volume mounts for the config auto-reload container
+      additionalVolumeMounts: []
+        #   - name: auto-reload-config
+        #     mountPath: /var/config/logger
+        #   - name: auto-reload-logs
+        #     mountPath: /var/log/auto_reload
+      # -- Config auto-reload logging settings
+      logging:
+        # See default settings https://github.com/kiwigrid/k8s-sidecar/blob/master/src/logger.py
+        configuration:
+          # -- Enables custom log config utilizing using the settings below.
+          override: false
+          logLevel: INFO
+          formatter: JSON
+          logToConsole: true
+          logToFile: false
+          maxBytes: 1024
+          backupCount: 3
 
       # -- The scheme to use when connecting to the Jenkins configuration as code endpoint
       scheme: http
@@ -651,6 +679,9 @@ controller:
   # -- Update strategy for StatefulSet
   updateStrategy: {}
 
+  # -- Topology spread constraints
+  topologySpreadConstraints: {}
+
   ingress:
     # -- Enables ingress
     enabled: false
@@ -689,7 +720,7 @@ controller:
     # -- Ingress hostname
     hostName:
     # -- Hostname to serve assets from
-    resourceRootUrl: 
+    resourceRootUrl:
     # -- Ingress TLS configuration
     tls: []
     # - secretName: jenkins.cluster.local
@@ -796,11 +827,98 @@ controller:
     # MetricRelabelConfigs to apply to samples before ingestion.
     metricRelabelings: []
 
+  googlePodMonitor:
+    # If enabled, It creates Google Managed Prometheus scraping config
+    enabled: false
+    # Set a custom namespace where to deploy PodMonitoring resource
+    # serviceMonitorNamespace: ""
+    scrapeInterval: 60s
+    # This is the default endpoint used by the prometheus plugin
+    scrapeEndpoint: /prometheus
+
+  # -- Can be used to disable rendering controller test resources when using helm template
+  testEnabled: true
+
+  httpsKeyStore:
+    # -- Enables HTTPS keystore on jenkins controller
+    enable: false
+    # -- Name of the secret that already has ssl keystore
+    jenkinsHttpsJksSecretName: ""
+    # -- Name of the key in the secret that already has ssl keystore
+    jenkinsHttpsJksSecretKey: "jenkins-jks-file"
+    # -- Name of the secret that contains the JKS password, if it is not in the same secret as the JKS file
+    jenkinsHttpsJksPasswordSecretName: ""
+    # -- Name of the key in the secret that contains the JKS password
+    jenkinsHttpsJksPasswordSecretKey: "https-jks-password"
+    disableSecretMount: false
+
+    # When HTTPS keystore is enabled, servicePort and targetPort will be used as HTTPS port
+    # -- HTTP Port that Jenkins should listen to along with HTTPS, it also serves as the liveness and readiness probes port.
+    httpPort: 8081
+    # -- Path of HTTPS keystore file
+    path: "/var/jenkins_keystore"
+    # -- Jenkins keystore filename which will appear under controller.httpsKeyStore.path
+    fileName: "keystore.jks"
+    # -- Jenkins keystore password
+    password: "password"
+
+    # -- Base64 encoded Keystore content. Keystore must be converted to base64 then being pasted here
+    jenkinsKeyStoreBase64Encoded:
+    # Convert keystore.jks files content to base64 > $ cat keystore.jks | base64
+#        /u3+7QAAAAIAAAABAAAAAQANamVua2luc2NpLmNvbQAAAW2r/b1ZAAAFATCCBP0wDgYKKwYBBAEq
+#        AhEBAQUABIIE6QbCqasvoHS0pSwYqSvdydMCB9t+VNfwhFIiiuAelJfO5sSe2SebJbtwHgLcRz1Z
+#        gMtWgOSFdl3bWSzA7vrW2LED52h+jXLYSWvZzuDuh8hYO85m10ikF6QR+dTi4jra0whIFDvq3pxe
+#        TnESxEsN+DvbZM3jA3qsjQJSeISNpDjO099dqQvHpnCn18lyk7J4TWJ8sOQQb1EM2zDAfAOSqA/x
+#        QuPEFl74DlY+5DIk6EBvpmWhaMSvXzWZACGA0sYqa157dq7O0AqmuLG/EI5EkHETO4CrtBW+yLcy
+#        2dUCXOMA+j+NjM1BjrQkYE5vtSfNO6lFZcISyKo5pTFlcA7ut0Fx2nZ8GhHTn32CpeWwNcZBn1gR
+#        pZVt6DxVVkhTAkMLhR4rL2wGIi/1WRs23ZOLGKtyDNvDHnQyDiQEoJGy9nAthA8aNHa3cfdF10vB
+#        Drb19vtpFHmpvKEEhpk2EBRF4fTi644Fuhu2Ied6118AlaPvEea+n6G4vBz+8RWuVCmZjLU+7h8l
+#        Hy3/WdUPoIL5eW7Kz+hS+sRTFzfu9C48dMkQH3a6f3wSY+mufizNF9U298r98TnYy+PfDJK0bstG
+#        Ph6yPWx8DGXKQBwrhWJWXI6JwZDeC5Ny+l8p1SypTmAjpIaSW3ge+KgcL6Wtt1R5hUV1ajVwVSUi
+#        HF/FachKqPqyLJFZTGjNrxnmNYpt8P1d5JTvJfmfr55Su/P9n7kcyWp7zMcb2Q5nlXt4tWogOHLI
+#        OzEWKCacbFfVHE+PpdrcvCVZMDzFogIq5EqGTOZe2poPpBVE+1y9mf5+TXBegy5HToLWvmfmJNTO
+#        NCDuBjgLs2tdw2yMPm4YEr57PnMX5gGTC3f2ZihXCIJDCRCdQ9sVBOjIQbOCzxFXkVITo0BAZhCi
+#        Yz61wt3Ud8e//zhXWCkCsSV+IZCxxPzhEFd+RFVjW0Nm9hsb2FgAhkXCjsGROgoleYgaZJWvQaAg
+#        UyBzMmKDPKTllBHyE3Gy1ehBNGPgEBChf17/9M+j8pcm1OmlM434ctWQ4qW7RU56//yq1soFY0Te
+#        fu2ei03a6m68fYuW6s7XEEK58QisJWRAvEbpwu/eyqfs7PsQ+zSgJHyk2rO95IxdMtEESb2GRuoi
+#        Bs+AHNdYFTAi+GBWw9dvEgqQ0Mpv0//6bBE/Fb4d7b7f56uUNnnE7mFnjGmGQN+MvC62pfwfvJTT
+#        EkT1iZ9kjM9FprTFWXT4UmO3XTvesGeE50sV9YPm71X4DCQwc4KE8vyuwj0s6oMNAUACW2ClU9QQ
+#        y0tRpaF1tzs4N42Q5zl0TzWxbCCjAtC3u6xf+c8MCGrr7DzNhm42LOQiHTa4MwX4x96q7235oiAU
+#        iQqSI/hyF5yLpWw4etyUvsx2/0/0wkuTU1FozbLoCWJEWcPS7QadMrRRISxHf0YobIeQyz34regl
+#        t1qSQ3dCU9D6AHLgX6kqllx4X0fnFq7LtfN7fA2itW26v+kAT2QFZ3qZhINGfofCja/pITC1uNAZ
+#        gsJaTMcQ600krj/ynoxnjT+n1gmeqThac6/Mi3YlVeRtaxI2InL82ZuD+w/dfY9OpPssQjy3xiQa
+#        jPuaMWXRxz/sS9syOoGVH7XBwKrWpQcpchozWJt40QV5DslJkclcr8aC2AGlzuJMTdEgz1eqV0+H
+#        bAXG9HRHN/0eJTn1/QAAAAEABVguNTA5AAADjzCCA4swggJzAhRGqVxH4HTLYPGO4rzHcCPeGDKn
+#        xTANBgkqhkiG9w0BAQsFADCBgTELMAkGA1UEBhMCY2ExEDAOBgNVBAgMB29udGFyaW8xEDAOBgNV
+#        BAcMB3Rvcm9udG8xFDASBgNVBAoMC2plbmtpbnN0ZXN0MRkwFwYDVQQDDBBqZW5raW5zdGVzdC5p
+#        bmZvMR0wGwYJKoZIhvcNAQkBFg50ZXN0QHRlc3QuaW5mbzAeFw0xOTEwMDgxNTI5NTVaFw0xOTEx
+#        MDcxNTI5NTVaMIGBMQswCQYDVQQGEwJjYTEQMA4GA1UECAwHb250YXJpbzEQMA4GA1UEBwwHdG9y
+#        b250bzEUMBIGA1UECgwLamVua2luc3Rlc3QxGTAXBgNVBAMMEGplbmtpbnN0ZXN0LmluZm8xHTAb
+#        BgkqhkiG9w0BCQEWDnRlc3RAdGVzdC5pbmZvMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+#        AQEA02q352JTHGvROMBhSHvSv+vnoOTDKSTz2aLQn0tYrIRqRo+8bfmMjXuhkwZPSnCpvUGNAJ+w
+#        Jrt/dqMoYUjCBkjylD/qHmnXN5EwS1cMg1Djh65gi5JJLFJ7eNcoSsr/0AJ+TweIal1jJSP3t3PF
+#        9Uv21gm6xdm7HnNK66WpUUXLDTKaIs/jtagVY1bLOo9oEVeLN4nT2CYWztpMvdCyEDUzgEdDbmrP
+#        F5nKUPK5hrFqo1Dc5rUI4ZshL3Lpv398aMxv6n2adQvuL++URMEbXXBhxOrT6rCtYzbcR5fkwS9i
+#        d3Br45CoWOQro02JAepoU0MQKY5+xQ4Bq9Q7tB9BAwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAe
+#        4xc+mSvKkrKBHg9/zpkWgZUiOp4ENJCi8H4tea/PCM439v6y/kfjT/okOokFvX8N5aa1OSz2Vsrl
+#        m8kjIc6hiA7bKzT6lb0EyjUShFFZ5jmGVP4S7/hviDvgB5yEQxOPpumkdRP513YnEGj/o9Pazi5h
+#        /MwpRxxazoda9r45kqQpyG+XoM4pB+Fd3JzMc4FUGxfVPxJU4jLawnJJiZ3vqiSyaB0YyUL+Er1Q
+#        6NnqtR4gEBF0ZVlQmkycFvD4EC2boP943dLqNUvop+4R3SM1QMM6P5u8iTXtHd/VN4MwMyy1wtog
+#        hYAzODo1Jt59pcqqKJEas0C/lFJEB3frw4ImNx5fNlJYOpx+ijfQs9m39CevDq0=
+
 agent:
   # -- Enable Kubernetes plugin jnlp-agent podTemplate
   enabled: true
   # -- The name of the pod template to use for providing default values
   defaultsProviderTemplate: ""
+
+  # Useful for not including a serviceAccount in the template if `false`
+  # -- Use `serviceAccountAgent.name` as the default value for defaults template `serviceAccount`
+  useDefaultServiceAccount: true
+
+  # -- Override the default service account
+  # @default -- `serviceAccountAgent.name` if `agent.useDefaultServiceAccount` is `true`
+  serviceAccount:
 
   # For connecting to the Jenkins controller
   # -- Overrides the Kubernetes Jenkins URL
@@ -809,6 +927,10 @@ agent:
   # connects to the specified host and port, instead of connecting directly to the Jenkins controller
   # -- Overrides the Kubernetes Jenkins tunnel
   jenkinsTunnel:
+  # -- Disables the verification of the controller certificate on remote connection. This flag correspond to the "Disable https certificate check" flag in kubernetes plugin UI
+  skipTlsVerify: false
+  # -- Enable the possibility to restrict the usage of this agent to specific folder. This flag correspond to the "Restrict pipeline support to authorized folders" flag in kubernetes plugin UI
+  usageRestricted: false
   # -- The connection timeout in seconds for connections to Kubernetes API. The minimum value is 5
   kubernetesConnectTimeout: 5
   # -- The read timeout in seconds for connections to Kubernetes API. The minimum value is 15
@@ -829,7 +951,7 @@ agent:
     # -- Repository to pull the agent jnlp image from
     repository: "jenkins/inbound-agent"
     # -- Tag of the image to pull
-    tag: "3206.vb_15dcf73f6a_9-3"
+    tag: "3261.v9c670a_4748a_9-1"
   # -- Configure working directory for default agent
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"
@@ -982,6 +1104,18 @@ agent:
   # -- Agent Pod base name
   podName: "default"
 
+  # Enables garbage collection of orphan pods for this Kubernetes cloud. (beta)
+  garbageCollection:
+    # -- When enabled, Jenkins will periodically check for orphan pods that have not been touched for the given timeout period and delete them.
+    enabled: false
+    # -- Namespaces to look at for garbage collection, in addition to the default namespace defined for the cloud. One namespace per line.
+    namespaces: ""
+    # namespaces: |-
+    #   namespaceOne
+    #   namespaceTwo
+    # -- Timeout value for orphaned pods
+    timeout: 300
+
   # -- Allows the Pod to remain active for reuse until the configured number of minutes has passed since the last step was executed on it
   idleMinutes: 0
 
@@ -1002,6 +1136,8 @@ agent:
 
   # -- Defines how the raw yaml field gets merged with yaml definitions from inherited pod templates. Possible values: "merge" or "override"
   yamlMergeStrategy: "override"
+  # -- Controls whether the defined yaml merge strategy will be inherited if another defined pod template is configured to inherit from the current one
+  inheritYamlMergeStrategy: false
   # -- Timeout in seconds for an agent to be online
   connectTimeout: 100
   # -- Annotations to apply to the pod
@@ -1147,7 +1283,83 @@ networkPolicy:
   # -- Enable the creation of NetworkPolicy resources
   enabled: false
 
+  # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
+  # For Kubernetes v1.7, use 'networking.k8s.io/v1'
+  # -- NetworkPolicy ApiVersion
+  apiVersion: networking.k8s.io/v1
+  # You can allow agents to connect from both within the cluster (from within specific/all namespaces) AND/OR from a given external IP range
+  internalAgents:
+    # -- Allow internal agents (from the same cluster) to connect to controller. Agent pods will be filtered based on PodLabels
+    allowed: true
+    # -- A map of labels (keys/values) that agent pods must have to be able to connect to controller
+    podLabels: {}
+    # -- A map of labels (keys/values) that agents namespaces must have to be able to connect to controller
+    namespaceLabels: {}
+      # project: myproject
+  externalAgents:
+    # -- The IP range from which external agents are allowed to connect to controller, i.e., 172.17.0.0/16
+    ipCIDR:
+    # -- A list of IP sub-ranges to be excluded from the allowlisted IP range
+    except: []
+      # - 172.17.1.0/24
+
+## Install Default RBAC roles and bindings
+rbac:
+  # -- Whether RBAC resources are created
+  create: true
+  # -- Whether the Jenkins service account should be able to read Kubernetes secrets
+  readSecrets: false
+  # -- Whether the Jenkins service account should be able to use the OpenShift "nonroot" Security Context Constraints
+  useOpenShiftNonRootSCC: false
+
+serviceAccount:
+  # -- Configures if a ServiceAccount with this name should be created
+  create: true
+
+  # The name of the ServiceAccount is autogenerated by default
+  #  -- The name of the ServiceAccount to be used by access-controlled resources
+  name:
+  # -- Configures annotations for the ServiceAccount
+  annotations: {}
+  # -- Configures extra labels for the ServiceAccount
+  extraLabels: {}
+  # -- Controller ServiceAccount image pull secret
+  imagePullSecretName:
 
 
+serviceAccountAgent:
+  # -- Configures if an agent ServiceAccount should be created
+  create: false
 
+  # If not set and create is true, a name is generated using the fullname template
+  # -- The name of the agent ServiceAccount to be used by access-controlled resources
+  name:
+  # -- Configures annotations for the agent ServiceAccount
+  annotations: {}
+  # -- Configures extra labels for the agent ServiceAccount
+  extraLabels: {}
+  # -- Agent ServiceAccount image pull secret
+  imagePullSecretName:
 
+# -- Checks if any deprecated values are used
+checkDeprecation: true
+
+awsSecurityGroupPolicies:
+  enabled: false
+  policies:
+    - name: ""
+      securityGroupIds: []
+      podSelector: {}
+
+# Here you can configure unit tests values when executing the helm unittest in the CONTRIBUTING.md
+helmtest:
+  # A testing framework for bash
+  bats:
+    # Bash Automated Testing System (BATS)
+    image:
+      # -- Registry of the image used to test the framework
+      registry: "docker.io"
+      # -- Repository of the image used to test the framework
+      repository: "bats/bats"
+      # -- Tag of the image to test the framework
+      tag: "1.11.0"
