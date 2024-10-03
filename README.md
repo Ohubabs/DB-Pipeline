@@ -134,8 +134,6 @@ Check that your cluster is created by checking your EC2 managed nodes
 
         terraform apply --auto-approve
 
-  ![Screenshot 2024-10-02 at 1 07 20 PM](https://github.com/user-attachments/assets/f262633e-def9-424d-9570-ab3269c15b1b)
-
   ![Screenshot 2024-10-02 at 1 07 23 PM](https://github.com/user-attachments/assets/554f0a31-1551-4b88-97d0-868474b52203)
 
 ### Step 7: Issue Let’s Encrypt Certificates using Cert-Manager to securely expose our apps to the internet as websites with SSL encryption.
@@ -166,13 +164,9 @@ Check that your cluster is created by checking your EC2 managed nodes
 
         terraform plan
 
- 	![Screenshot 2024-10-02 at 1 01 10 PM](https://github.com/user-attachments/assets/f2d91c41-cd4b-485c-bdeb-40168751c782)
-
   ![Screenshot 2024-10-02 at 1 01 33 PM](https://github.com/user-attachments/assets/b37ed353-1d49-4901-8cfc-1fbde6ad8943)
 
         terraform apply --auto-approve
-
-  ![Screenshot 2024-10-02 at 1 01 57 PM](https://github.com/user-attachments/assets/0269d1a6-fe33-402b-ad4b-0785b912aa20)
 
   ![Screenshot 2024-10-02 at 1 03 18 PM](https://github.com/user-attachments/assets/5267a688-03ac-4213-b9b2-d974d3367d4c)
 
