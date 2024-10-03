@@ -88,8 +88,6 @@ Check that your cluster is created by checking your EC2 managed nodes
  	![Screenshot 2024-10-02 at 12 51 04 PM](https://github.com/user-attachments/assets/3e58e967-8507-4bd3-ae35-f438ba65b18a)
 
         terraform apply --auto-approve
-
-  ![Screenshot 2024-10-02 at 12 51 17 PM](https://github.com/user-attachments/assets/91e5e784-dfb1-45b4-b468-3930cc43119b)
   
   ![Screenshot 2024-10-02 at 12 51 22 PM](https://github.com/user-attachments/assets/c06b9b79-c803-4f16-a703-e76f701a7860)
 
